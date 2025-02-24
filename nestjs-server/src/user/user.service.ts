@@ -20,7 +20,7 @@ export class UserService {
 
 		if (!user) {
 			throw new NotFoundException(
-				'User not found. Please, check user info'
+				'Пользователь не найден. Пожалуйста, проверьте введенные данные.'
 			)
 		}
 

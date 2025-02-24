@@ -1,4 +1,5 @@
-import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common'
+import { Controller, Get, HttpCode, HttpStatus, Param } from '@nestjs/common'
+import { UserRole } from '@prisma/__generated__'
 
 import { Authorization } from '@/auth/decorators/auth.decorator'
 import { Authorized } from '@/auth/decorators/authorized.decorator'
@@ -13,6 +14,12 @@ export class UserController {
 	@Get('profile')
 	@HttpCode(HttpStatus.OK)
 	public async findProfile(@Authorized('id') userId: string) {
+		return await this.userService.findById(userId)
+	}
+	@Authorization(UserRole.ADMIN)
+	@Get('by-id/:id')
+	@HttpCode(HttpStatus.OK)
+	public async findById(@Param('id') userId: string) {
 		return await this.userService.findById(userId)
 	}
 }
