@@ -1,4 +1,10 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator'
+import {
+	IsEmail,
+	IsNotEmpty,
+	IsOptional,
+	IsString,
+	MinLength
+} from 'class-validator'
 
 export class LoginDto {
 	@IsEmail({}, { message: 'Некоректный формат email' })
@@ -10,4 +16,8 @@ export class LoginDto {
 	@IsString({ message: 'Пароль должен быть стракой' })
 	@IsNotEmpty({ message: 'Пароль не должен быть пустым' })
 	password: string
+
+	@IsOptional()
+	@IsString()
+	code: string
 }

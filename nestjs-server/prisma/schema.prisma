@@ -20,7 +20,7 @@ model User {
   role UserRole @default(REGULAR)
 
   isVerified        Boolean @default(false) @map("is_verified")
-  isToFactorEnebled Boolean @default(false) @map("is_to_factor_enebled")
+  isTwoFactorEnabled Boolean @default(false) @map("is_to_factor_enebled")
 
   method AuthMethod
 
@@ -58,6 +58,8 @@ model Token {
   token     String    @unique
   type      TokenType
   expiresIn DateTime  @map("expires_in")
+
+  createdAt DateTime @default(now()) @map("created_at")
 
   @@map("tokens")
 }
