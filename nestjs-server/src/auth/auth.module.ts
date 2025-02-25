@@ -6,6 +6,7 @@ import { AuthController } from '@/auth/auth.controller'
 import { AuthService } from '@/auth/auth.service'
 import { EmailConfirmationModule } from '@/auth/email-confirmation/email-confirmation.module'
 import { ProviderModule } from '@/auth/provider/provider.module'
+import { TwoFactorAuthService } from '@/auth/two-factor-auth/two-factor-auth.service'
 import { getProvidersConfig } from '@/config/providers.config'
 import { getRecaptchaConfig } from '@/config/recaptcha.config'
 import { MailService } from '@/libs/mail/mail.service'
@@ -26,7 +27,7 @@ import { UserService } from '@/user/user.service'
 		forwardRef(() => EmailConfirmationModule)
 	],
 	controllers: [AuthController],
-	providers: [AuthService, UserService, MailService],
+	providers: [AuthService, UserService, MailService, TwoFactorAuthService],
 	exports: [AuthService]
 })
 export class AuthModule {}

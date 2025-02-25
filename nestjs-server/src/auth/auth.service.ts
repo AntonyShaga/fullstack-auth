@@ -6,34 +6,37 @@ import {
 	UnauthorizedException
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import { AuthMethod, User } from '@prisma/__generated__'
 import { verify } from 'argon2'
 import { Request, Response } from 'express'
-import { AuthMethod, User } from 'prisma/__generated__'
 
-import { LoginDto } from '@/auth/dto/login.dto'
-import { RegisterDto } from '@/auth/dto/register.dto'
-import { EmailConfirmationService } from '@/auth/email-confirmation/email-confirmation.service'
-import { ProviderService } from '@/auth/provider/provider.service'
 import { PrismaService } from '@/prisma/prisma.service'
 import { UserService } from '@/user/user.service'
 
+import { LoginDto } from './dto/login.dto'
+import { RegisterDto } from './dto/register.dto'
+import { EmailConfirmationService } from './email-confirmation/email-confirmation.service'
+import { ProviderService } from './provider/provider.service'
+import { TwoFactorAuthService } from './two-factor-auth/two-factor-auth.service'
+
 @Injectable()
 export class AuthService {
-	constructor(
+	public constructor(
+		private readonly prismaService: PrismaService,
 		private readonly userService: UserService,
 		private readonly configService: ConfigService,
 		private readonly providerService: ProviderService,
-		private readonly prismaService: PrismaService,
-		private readonly emailConfirmationService: EmailConfirmationService
+		private readonly emailConfirmationService: EmailConfirmationService,
+		private readonly twoFactorAuthService: TwoFactorAuthService
 	) {}
 
-	public async register(req: Request, dto: RegisterDto) {
-		const isExist = await this.userService.findByEmail(dto.email)
-		if (isExist) {
+	public async register(dto: RegisterDto) {
+		const isExists = await this.userService.findByEmail(dto.email)
+
+		if (isExists) {
 			throw new ConflictException(
-				'Регистрация не удалась. Пользователь с таким email уже ' +
-					'существует. Пожалуйста, используйте другой email или войдите в' +
-					' систему.'
+				'Регистрация не удалась. Пользователь с таким email уже существует.' +
+					' Пожалуйста, используйте другой email или войдите в систему.'
 			)
 		}
 
@@ -45,21 +48,25 @@ export class AuthService {
 			AuthMethod.CREDENTIALS,
 			false
 		)
+
 		await this.emailConfirmationService.sendVerificationToken(newUser.email)
 
 		return {
 			message:
-				'Вы успешно зарегистрировались. Пожалуйста, подтвердите ваш email.' +
-				' Сообщение было отправлено на ваш почтовый адрес.'
+				'Вы успешно зарегистрировались. ' +
+				'Пожалуйста, подтвердите ваш email. Сообщение было отправлено на ваш почтовый адрес.'
 		}
 	}
+
 	public async login(req: Request, dto: LoginDto) {
 		const user = await this.userService.findByEmail(dto.email)
+
 		if (!user || !user.password) {
 			throw new NotFoundException(
 				'Пользователь не найден. Пожалуйста, проверьте введенные данные'
 			)
 		}
+
 		const isValidPassword = await verify(user.password, dto.password)
 
 		if (!isValidPassword) {
@@ -67,6 +74,7 @@ export class AuthService {
 				'Неверный пароль. Пожалуйста, попробуйте еще раз или восстановите пароль, если забыли его.'
 			)
 		}
+
 		if (!user.isVerified) {
 			await this.emailConfirmationService.sendVerificationToken(
 				user.email
@@ -75,6 +83,23 @@ export class AuthService {
 				'Ваш email не подтвержден. Пожалуйста, проверьте вашу почту и подтвердите адрес.'
 			)
 		}
+
+		if (user.isTwoFactorEnebled) {
+			if (!dto.code) {
+				await this.twoFactorAuthService.sendTwoFactorToken(user.email)
+
+				return {
+					message:
+						'Проверьте вашу почту. Требуется код двухфакторной аутентификации.'
+				}
+			}
+
+			await this.twoFactorAuthService.validateTwoFactorToken(
+				user.email,
+				dto.code
+			)
+		}
+
 		return this.saveSession(req, user)
 	}
 
@@ -127,7 +152,7 @@ export class AuthService {
 	}
 
 	public async logout(req: Request, res: Response): Promise<void> {
-		return new Promise(async (resolve, reject) => {
+		return new Promise((resolve, reject) => {
 			req.session.destroy(err => {
 				if (err) {
 					return reject(
@@ -144,7 +169,8 @@ export class AuthService {
 			})
 		})
 	}
-	public saveSession(req: Request, user: User) {
+
+	public async saveSession(req: Request, user: User) {
 		return new Promise((resolve, reject) => {
 			req.session.userId = user.id
 
@@ -152,12 +178,14 @@ export class AuthService {
 				if (err) {
 					return reject(
 						new InternalServerErrorException(
-							'Не удалось завершить сессию. Возможно, возникла проблема' +
-								' с сервером или сессия уже была завершена.'
+							'Не удалось сохранить сессию. Проверьте, правильно ли настроены параметры сессии.'
 						)
 					)
 				}
-				resolve({ user })
+
+				resolve({
+					user
+				})
 			})
 		})
 	}
