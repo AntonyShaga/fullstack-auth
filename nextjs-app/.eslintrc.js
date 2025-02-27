@@ -22,6 +22,8 @@ module.exports = {
 		'@typescript-eslint/explicit-module-boundary-types': 'off',
 		'@typescript-eslint/no-explicit-any': 'off',
 
-		'max-len': ['error', { code: 120, ignoreUrls: true }]
+		// Ограничение длины строки
+		'max-len': ['error', { code: 120, ignoreUrls: true, ignoreStrings: false, ignoreTemplateLiterals: false }],
+		'object-curly-newline': ['error', { multiline: true, consistent: true }]
 	}
 }
