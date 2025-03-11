@@ -1,16 +1,21 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useTheme } from 'next-themes'
+import { useState } from 'react'
+import ReCAPTCHA from 'react-google-recaptcha'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 
 import { AuthWrapper } from '@/features/auth/components/AuthWrapper'
-import { RegisterShema, TypeRegisterShema } from '@/features/auth/schemes'
 
 import { Button, Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input } from '@/shared/components/ui'
 
+import { RegisterSchema, TypeRegisterSchema } from '../schemes'
+
 export function RegisterForm() {
-	const form = useForm<TypeRegisterShema>({
-		resolver: zodResolver(RegisterShema),
+	const form = useForm<TypeRegisterSchema>({
+		resolver: zodResolver(RegisterSchema),
 		defaultValues: {
 			name: '',
 			email: '',
@@ -18,9 +23,15 @@ export function RegisterForm() {
 			passwordRepeat: ''
 		}
 	})
+	const { theme } = useTheme()
+	const [recaptchaValue, setRecaptchaValue] = useState<string | null>(null)
 
-	const onSubmit = (data: TypeRegisterShema) => {
-		console.log(data)
+	const onSubmit = (data: TypeRegisterSchema) => {
+		if (recaptchaValue) {
+			console.log(data)
+		} else {
+			toast.error('Пожалуйста, завершите reCAPTCHA')
+		}
 	}
 
 	return (
@@ -85,6 +96,13 @@ export function RegisterForm() {
 							</FormItem>
 						)}
 					/>
+					<div className='flex justify-center'>
+						<ReCAPTCHA
+							sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY as string}
+							onChange={setRecaptchaValue}
+							theme={theme === 'light' ? 'light' : 'dark'}
+						/>
+					</div>
 					<Button type={'submit'}>Создать Акаунт</Button>
 				</form>
 			</Form>

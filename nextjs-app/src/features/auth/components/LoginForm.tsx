@@ -5,6 +5,7 @@ import { useTheme } from 'next-themes'
 import { useState } from 'react'
 import ReCAPTCHA from 'react-google-recaptcha'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 
 //import { toast } from 'sonner'
 import { Button, Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input } from '@/shared/components/ui'
@@ -31,9 +32,10 @@ export function LoginForm() {
 
 	const onSubmit = (values: TypeLoginSchema) => {
 		if (recaptchaValue) {
+			console.log(values)
 			//login({ values, recaptcha: recaptchaValue })
 		} else {
-			//toast.error('Пожалуйста, завершите reCAPTCHA')
+			toast.error('Пожалуйста, завершите reCAPTCHA')
 		}
 	}
 
