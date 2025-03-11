@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { type PropsWithChildren } from 'react'
 
-import AuthSocial from '@/features/auth/components/AuthSocial'
+import { AuthSocial } from '@/features/auth/components/AuthSocial'
 
 import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/shared/components/ui'
 

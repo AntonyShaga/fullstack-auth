@@ -2,10 +2,11 @@ import { useMutation } from '@tanstack/react-query'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
 
+import { passwordRecoveryService } from '@/features/auth/services'
+
 import { toastMessageHandler } from '@/shared/utils'
 
 import { TypeNewPasswordSchema } from '../schemes'
-import { passwordRecoveryService } from '../services/password-recovery.service'
 
 export function useNewPasswordMutation() {
 	const router = useRouter()

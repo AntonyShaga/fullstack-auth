@@ -7,10 +7,11 @@ import ReCAPTCHA from 'react-google-recaptcha'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
+import { useLoginMutation } from '@/features/auth/hooks'
+
 //import { toast } from 'sonner'
 import { Button, Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input } from '@/shared/components/ui'
 
-//import { useLoginMutation } from '../hooks'
 import { LoginSchema, TypeLoginSchema } from '../schemes'
 
 import { AuthWrapper } from './AuthWrapper'
@@ -18,7 +19,7 @@ import { AuthWrapper } from './AuthWrapper'
 export function LoginForm() {
 	const { theme } = useTheme()
 	const [recaptchaValue, setRecaptchaValue] = useState<string | null>(null)
-	//const [isShowTwoFactor, setIsShowFactor] = useState(false)
+	const [isShowTwoFactor, setIsShowFactor] = useState(false)
 
 	const form = useForm<TypeLoginSchema>({
 		resolver: zodResolver(LoginSchema),
@@ -28,12 +29,12 @@ export function LoginForm() {
 		}
 	})
 
-	//const { login, isLoadingLogin } = useLoginMutation(setIsShowFactor)
+	const { login, isLoadingLogin } = useLoginMutation(setIsShowFactor)
 
 	const onSubmit = (values: TypeLoginSchema) => {
 		if (recaptchaValue) {
 			console.log(values)
-			//login({ values, recaptcha: recaptchaValue })
+			login({ values, recaptcha: recaptchaValue })
 		} else {
 			toast.error('Пожалуйста, завершите reCAPTCHA')
 		}
@@ -57,7 +58,7 @@ export function LoginForm() {
 								<FormItem>
 									<FormLabel>Код</FormLabel>
 									<FormControl>
-										<Input placeholder='123456' {...field} />
+										<Input placeholder='123456' disabled={isLoadingLogin} {...field} />
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -73,7 +74,12 @@ export function LoginForm() {
 									<FormItem>
 										<FormLabel>Почта</FormLabel>
 										<FormControl>
-											<Input placeholder='ivan@example.com' type='email' {...field} />
+											<Input
+												disabled={isLoadingLogin}
+												placeholder='ivan@example.com'
+												type='email'
+												{...field}
+											/>
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -94,7 +100,12 @@ export function LoginForm() {
 											</Link>
 										</div>*/}
 										<FormControl>
-											<Input placeholder='******' type='password' {...field} />
+											<Input
+												disabled={isLoadingLogin}
+												placeholder='******'
+												type='password'
+												{...field}
+											/>
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -109,7 +120,9 @@ export function LoginForm() {
 							theme={theme === 'light' ? 'light' : 'dark'}
 						/>
 					</div>
-					<Button type='submit'>Войти в аккаунт</Button>
+					<Button disabled={isLoadingLogin} type='submit'>
+						Войти в аккаунт
+					</Button>
 				</form>
 			</Form>
 		</AuthWrapper>
