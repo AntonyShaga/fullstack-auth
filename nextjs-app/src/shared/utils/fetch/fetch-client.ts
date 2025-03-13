@@ -59,7 +59,7 @@ export class FetchClient {
 		}
 
 		const response: Response = await fetch(url, config)
-
+		console.log(response)
 		if (!response.ok) {
 			const error = (await response.json()) as { message: string } | undefined
 			throw new FetchError(response.status, error?.message || response.statusText)

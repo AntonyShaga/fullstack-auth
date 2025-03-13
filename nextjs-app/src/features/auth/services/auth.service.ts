@@ -10,7 +10,7 @@ class AuthService {
 		const response = await api.post<IUser>('auth/register', body, {
 			headers
 		})
-
+		console.log('REGISTER RESPONSE:', response)
 		return response
 	}
 
@@ -20,7 +20,7 @@ class AuthService {
 		const response = await api.post<IUser>('auth/login', body, {
 			headers
 		})
-
+		console.log('REGISTER RESPONSE:', response)
 		return response
 	}
 

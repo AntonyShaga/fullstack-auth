@@ -7,7 +7,7 @@ export function useProfile() {
 		queryKey: ['profile'],
 		queryFn: () => userService.findProfile()
 	})
-
+	console.log({ data: user, isLoading })
 	return {
 		user,
 		isLoading

@@ -9,8 +9,7 @@ import { userService } from '../services'
 export function useUpdateProfileMutation() {
 	const { mutate: update, isPending: isLoadingUpdate } = useMutation({
 		mutationKey: ['update profile'],
-		mutationFn: (data: TypeSettingsSchema) =>
-			userService.updateProfile(data),
+		mutationFn: (data: TypeSettingsSchema) => userService.updateProfile(data),
 		onSuccess() {
 			toast.success('Профиль успешно обновлён')
 		},

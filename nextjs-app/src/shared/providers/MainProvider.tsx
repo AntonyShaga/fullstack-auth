@@ -9,7 +9,13 @@ import { ToastProvider } from '@/shared/providers/ToastProvider'
 export function MainProvider({ children }: PropsWithChildren) {
 	return (
 		<TanstackQueryProvider>
-			<ThemeProvider attribute='class' disableTransitionOnChange defaultTheme='system'>
+			<ThemeProvider
+				attribute='class'
+				defaultTheme='light'
+				enableSystem
+				forcedTheme={undefined}
+				disableTransitionOnChange
+			>
 				<ToastProvider />
 				{children}
 			</ThemeProvider>
