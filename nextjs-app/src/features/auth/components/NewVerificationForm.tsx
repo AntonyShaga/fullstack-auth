@@ -12,6 +12,7 @@ import { AuthWrapper } from './AuthWrapper'
 export function NewVerificationForm() {
 	const searchParams = useSearchParams()
 	const token = searchParams.get('token')
+
 	const { verification } = useVerificationMutation()
 
 	useEffect(() => {

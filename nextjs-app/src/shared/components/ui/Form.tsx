@@ -5,8 +5,9 @@ import { Slot } from '@radix-ui/react-slot'
 import * as React from 'react'
 import { Controller, ControllerProps, FieldPath, FieldValues, FormProvider, useFormContext } from 'react-hook-form'
 
-import { Label } from '@/shared/components/ui/Label'
 import { cn } from '@/shared/utils'
+
+import { Label } from './Label'
 
 const Form = FormProvider
 
@@ -106,12 +107,7 @@ const FormDescription = React.forwardRef<HTMLParagraphElement, React.HTMLAttribu
 		const { formDescriptionId } = useFormField()
 
 		return (
-			<p
-				ref={ref}
-				id={formDescriptionId}
-				className={cn('text-[0.8rem] text-muted-foreground', className)}
-				{...props}
-			/>
+			<p ref={ref} id={formDescriptionId} className={cn('text-sm text-muted-foreground', className)} {...props} />
 		)
 	}
 )
@@ -120,7 +116,7 @@ FormDescription.displayName = 'FormDescription'
 const FormMessage = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLParagraphElement>>(
 	({ className, children, ...props }, ref) => {
 		const { error, formMessageId } = useFormField()
-		const body = error ? String(error?.message ?? '') : children
+		const body = error ? String(error?.message) : children
 
 		if (!body) {
 			return null
@@ -130,7 +126,7 @@ const FormMessage = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<
 			<p
 				ref={ref}
 				id={formMessageId}
-				className={cn('text-[0.8rem] font-medium text-destructive', className)}
+				className={cn('text-sm font-medium text-destructive', className)}
 				{...props}
 			>
 				{body}
@@ -140,4 +136,4 @@ const FormMessage = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<
 )
 FormMessage.displayName = 'FormMessage'
 
-export { useFormField, Form, FormItem, FormLabel, FormControl, FormDescription, FormMessage, FormField }
+export { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, useFormField }

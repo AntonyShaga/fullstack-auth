@@ -116,13 +116,11 @@ export function RegisterForm() {
 						)}
 					/>
 					<div className='flex justify-center'>
-						<div className='flex justify-center'>
-							<ReCAPTCHA
-								sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY as string}
-								onChange={setRecaptchaValue}
-								theme={theme === 'light' ? 'light' : 'dark'}
-							/>
-						</div>
+						<ReCAPTCHA
+							sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY as string}
+							onChange={setRecaptchaValue}
+							theme={theme === 'light' ? 'light' : 'dark'}
+						/>
 					</div>
 					<Button type='submit' disabled={isLoadingRegister}>
 						Создать аккаунт

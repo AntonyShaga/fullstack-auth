@@ -58,7 +58,10 @@ export function SettingsForm() {
 					<Loading />
 				) : (
 					<Form {...form}>
-						<form onSubmit={form.handleSubmit(onSubmit)} className='grid gap-2 space-y-2'>
+						<form
+							onSubmit={form.handleSubmit(onSubmit)}
+							className='grid gap-2 space-y-2'
+						>
 							<FormField
 								control={form.control}
 								name='name'
@@ -66,7 +69,11 @@ export function SettingsForm() {
 									<FormItem>
 										<FormLabel>Имя</FormLabel>
 										<FormControl>
-											<Input placeholder='Иван' disabled={isLoadingUpdate} {...field} />
+											<Input
+												placeholder='Иван'
+												disabled={isLoadingUpdate}
+												{...field}
+											/>
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -96,13 +103,20 @@ export function SettingsForm() {
 								render={({ field }) => (
 									<FormItem className='flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm'>
 										<div className='space-y-0.5'>
-											<FormLabel>Двухфакторная аутентификация</FormLabel>
+											<FormLabel>
+												Двухфакторная аутентификация
+											</FormLabel>
 											<FormDescription>
-												Включите двухфакторную аутентификацию для вашей учетной записи
+												Включите двухфакторную
+												аутентификацию для вашей учетной
+												записи
 											</FormDescription>
 										</div>
 										<FormControl>
-											<Switch checked={field.value} onCheckedChange={field.onChange} />
+											<Switch
+												checked={field.value}
+												onCheckedChange={field.onChange}
+											/>
 										</FormControl>
 									</FormItem>
 								)}

@@ -1,10 +1,10 @@
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
-import { TypeResetPasswordSchema } from '@/features/auth/schemes'
-import { passwordRecoveryService } from '@/features/auth/services'
-
 import { toastMessageHandler } from '@/shared/utils'
+
+import { TypeResetPasswordSchema } from '../schemes/reset-password.schema'
+import { passwordRecoveryService } from '../services/password-recovery.service'
 
 export function useResetPasswordMutation() {
 	const { mutate: reset, isPending: isLoadingReset } = useMutation({

@@ -8,14 +8,8 @@ import { authService } from '../services'
 export function useRegisterMutation() {
 	const { mutate: register, isPending: isLoadingRegister } = useMutation({
 		mutationKey: ['register user'],
-		mutationFn: async ({ values, recaptcha }: { values: TypeRegisterSchema; recaptcha: string }) => {
-			try {
-				const response = await authService.register(values, recaptcha)
-				return response
-			} catch (error: any) {
-				throw error
-			}
-		},
+		mutationFn: ({ values, recaptcha }: { values: TypeRegisterSchema; recaptcha: string }) =>
+			authService.register(values, recaptcha),
 		onSuccess(data: any) {
 			toastMessageHandler(data)
 		},

@@ -9,27 +9,27 @@ import { toast } from 'sonner'
 
 import { Button, Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input } from '@/shared/components/ui'
 
-import { useNewPasswordMutation } from '../hooks'
-import { NewPasswordSchema, TypeNewPasswordSchema } from '../schemes'
+import { useResetPasswordMutation } from '../hooks'
+import { ResetPasswordSchema, TypeResetPasswordSchema } from '../schemes'
 
 import { AuthWrapper } from './AuthWrapper'
 
-export function NewPasswordForm() {
+export function ResetPasswordForm() {
 	const { theme } = useTheme()
 	const [recaptchaValue, setRecaptchaValue] = useState<string | null>(null)
 
-	const form = useForm<TypeNewPasswordSchema>({
-		resolver: zodResolver(NewPasswordSchema),
+	const form = useForm<TypeResetPasswordSchema>({
+		resolver: zodResolver(ResetPasswordSchema),
 		defaultValues: {
-			password: ''
+			email: ''
 		}
 	})
 
-	const { newPassword, isLoadingNew } = useNewPasswordMutation()
+	const { reset, isLoadingReset } = useResetPasswordMutation()
 
-	const onSubmit = (values: TypeNewPasswordSchema) => {
+	const onSubmit = (values: TypeResetPasswordSchema) => {
 		if (recaptchaValue) {
-			newPassword({ values, recaptcha: recaptchaValue })
+			reset({ values, recaptcha: recaptchaValue })
 		} else {
 			toast.error('Пожалуйста, завершите reCAPTCHA')
 		}
@@ -37,8 +37,8 @@ export function NewPasswordForm() {
 
 	return (
 		<AuthWrapper
-			heading='Новый пароль'
-			description='Придумайте новый пароль для вашего аккаунта'
+			heading='Сброс пароля'
+			description='Для сброса пароля введите свою почту'
 			backButtonLabel='Войти в аккаунт'
 			backButtonHref='/auth/login'
 		>
@@ -46,12 +46,17 @@ export function NewPasswordForm() {
 				<form onSubmit={form.handleSubmit(onSubmit)} className='grid gap-2 space-y-2'>
 					<FormField
 						control={form.control}
-						name='password'
+						name='email'
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Пароль</FormLabel>
+								<FormLabel>Почта</FormLabel>
 								<FormControl>
-									<Input placeholder='******' disabled={isLoadingNew} type='password' {...field} />
+									<Input
+										placeholder='ivan@example.com'
+										disabled={isLoadingReset}
+										type='email'
+										{...field}
+									/>
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -64,8 +69,8 @@ export function NewPasswordForm() {
 							theme={theme === 'light' ? 'light' : 'dark'}
 						/>
 					</div>
-					<Button type='submit' disabled={isLoadingNew}>
-						Продолжить
+					<Button type='submit' disabled={isLoadingReset}>
+						Сбросить
 					</Button>
 				</form>
 			</Form>

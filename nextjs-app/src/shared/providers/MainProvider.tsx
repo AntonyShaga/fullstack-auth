@@ -2,20 +2,12 @@
 
 import { type PropsWithChildren } from 'react'
 
-import { TanstackQueryProvider } from '@/shared/providers/TanstackQueryProvider'
-import { ThemeProvider } from '@/shared/providers/ThemeProvider'
-import { ToastProvider } from '@/shared/providers/ToastProvider'
+import { TanstackQueryProvider, ThemeProvider, ToastProvider } from './index'
 
-export function MainProvider({ children }: PropsWithChildren) {
+export function MainProvider({ children }: PropsWithChildren<unknown>) {
 	return (
 		<TanstackQueryProvider>
-			<ThemeProvider
-				attribute='class'
-				defaultTheme='light'
-				enableSystem
-				forcedTheme={undefined}
-				disableTransitionOnChange
-			>
+			<ThemeProvider attribute='class' defaultTheme='light' disableTransitionOnChange>
 				<ToastProvider />
 				{children}
 			</ThemeProvider>

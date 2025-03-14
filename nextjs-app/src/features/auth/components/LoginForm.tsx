@@ -2,16 +2,15 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTheme } from 'next-themes'
+import Link from 'next/link'
 import { useState } from 'react'
 import ReCAPTCHA from 'react-google-recaptcha'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-import { useLoginMutation } from '@/features/auth/hooks'
-
-//import { toast } from 'sonner'
 import { Button, Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input } from '@/shared/components/ui'
 
+import { useLoginMutation } from '../hooks'
 import { LoginSchema, TypeLoginSchema } from '../schemes'
 
 import { AuthWrapper } from './AuthWrapper'
@@ -33,7 +32,6 @@ export function LoginForm() {
 
 	const onSubmit = (values: TypeLoginSchema) => {
 		if (recaptchaValue) {
-			console.log(values)
 			login({ values, recaptcha: recaptchaValue })
 		} else {
 			toast.error('Пожалуйста, завершите reCAPTCHA')
@@ -50,7 +48,7 @@ export function LoginForm() {
 		>
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)} className='grid gap-2 space-y-2'>
-					{
+					{isShowTwoFactor && (
 						<FormField
 							control={form.control}
 							name='code'
@@ -64,8 +62,8 @@ export function LoginForm() {
 								</FormItem>
 							)}
 						/>
-					}
-					{
+					)}
+					{!isShowTwoFactor && (
 						<>
 							<FormField
 								control={form.control}
@@ -75,8 +73,8 @@ export function LoginForm() {
 										<FormLabel>Почта</FormLabel>
 										<FormControl>
 											<Input
-												disabled={isLoadingLogin}
 												placeholder='ivan@example.com'
+												disabled={isLoadingLogin}
 												type='email'
 												{...field}
 											/>
@@ -90,7 +88,7 @@ export function LoginForm() {
 								name='password'
 								render={({ field }) => (
 									<FormItem>
-										{/*<div className='flex items-center justify-between'>
+										<div className='flex items-center justify-between'>
 											<FormLabel>Пароль</FormLabel>
 											<Link
 												href='/auth/reset-password'
@@ -98,11 +96,11 @@ export function LoginForm() {
 											>
 												Забыли пароль?
 											</Link>
-										</div>*/}
+										</div>
 										<FormControl>
 											<Input
-												disabled={isLoadingLogin}
 												placeholder='******'
+												disabled={isLoadingLogin}
 												type='password'
 												{...field}
 											/>
@@ -112,7 +110,7 @@ export function LoginForm() {
 								)}
 							/>
 						</>
-					}
+					)}
 					<div className='flex justify-center'>
 						<ReCAPTCHA
 							sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY as string}
@@ -120,7 +118,7 @@ export function LoginForm() {
 							theme={theme === 'light' ? 'light' : 'dark'}
 						/>
 					</div>
-					<Button disabled={isLoadingLogin} type='submit'>
+					<Button type='submit' disabled={isLoadingLogin}>
 						Войти в аккаунт
 					</Button>
 				</form>
